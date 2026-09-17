@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificado de autenticidade — MM&amp;B Cutelaria</title>
+<meta name="description" content="Verificação de autenticidade e garantia de facas MM&amp;B.">
+<meta name="theme-color" content="#DDE0E0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,600;1,400&family=Zilla+Slab:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+  <span class="marca">MM&amp;B</span>
+  <span class="marca-sub">cutelaria artesanal</span>
+</header>
+
+<main id="app" class="folha" aria-live="polite">
+
+  <!-- Carregando -->
+  <section class="estado" data-estado="carregando">
+    <div class="selo selo--vazio"><span class="selo-pulso"></span></div>
+    <p class="linha-status">Consultando o registro da lâmina…</p>
+  </section>
+
+  <!-- Certificado encontrado -->
+  <section class="estado" data-estado="ok" hidden>
+    <div class="selo">
+      <span class="selo-topo">certificado</span>
+      <strong class="selo-id" id="c-id">MB-0000</strong>
+    </div>
+
+    <p class="linha-status" id="c-status-linha">
+      <span class="ponto" id="c-ponto"></span>
+      <span id="c-status-texto">Peça autêntica</span>
+    </p>
+
+    <dl class="ficha" id="c-ficha"></dl>
+
+    <p class="nota">
+      Esta lâmina foi forjada, temperada e montada à mão por Marcos&nbsp;M.&nbsp;&amp;&nbsp;B. O registro acima
+      é único e acompanha a peça pela vida inteira — inclusive se ela mudar de dono.
+    </p>
+
+    <div class="garantia">
+      <h2>O que a garantia cobre</h2>
+      <ul>
+        <li>Trincas ou falhas de têmpera na lâmina</li>
+        <li>Soltura do cabo, dos pinos ou da guarda</li>
+        <li>Costura da bainha de couro por 2 anos</li>
+      </ul>
+      <p class="garantia-fora">Não cobre fio cego pelo uso, manchas de oxidação por falta de óleo, quedas, lascas por corte em osso congelado ou metal, e afiação feita por terceiros em esmeril.</p>
+    </div>
+
+    <a class="botao" id="c-contato" href="#">Falar com o cuteleiro</a>
+  </section>
+
+  <!-- Não encontrado -->
+  <section class="estado" data-estado="nao-encontrado" hidden>
+    <div class="selo selo--alerta">
+      <span class="selo-topo">sem registro</span>
+      <strong class="selo-id" id="e-id">MB-0000</strong>
+    </div>
+    <p class="linha-status"><span class="ponto ponto--alerta"></span> Este código não consta na nossa oficina</p>
+    <p class="nota">
+      Confira se digitou o código exatamente como está gravado na peça. Se o código estiver certo e mesmo
+      assim não aparecer aqui, fale com a gente antes de comprar: a peça pode não ser nossa.
+    </p>
+    <a class="botao" id="e-contato" href="#">Enviar o código para conferência</a>
+  </section>
+
+  <!-- Sem código na URL -->
+  <section class="estado" data-estado="sem-codigo" hidden>
+    <div class="selo selo--vazio"><span class="selo-topo">consulta</span><strong class="selo-id">MB-____</strong></div>
+    <p class="linha-status">Digite o código gravado na lâmina</p>
+    <div class="busca">
+      <label for="campo-id">Código do certificado</label>
+      <input id="campo-id" type="text" inputmode="text" autocapitalize="characters" placeholder="MB-0001" spellcheck="false">
+      <button id="btn-buscar" class="botao" type="button">Verificar peça</button>
+    </div>
+  </section>
+
+  <!-- Erro de conexão -->
+  <section class="estado" data-estado="erro" hidden>
+    <div class="selo selo--alerta"><span class="selo-topo">falha</span><strong class="selo-id">—</strong></div>
+    <p class="linha-status"><span class="ponto ponto--alerta"></span> Não deu para consultar o registro agora</p>
+    <p class="nota">A consulta depende de internet. Verifique a conexão e tente de novo.</p>
+    <button class="botao" type="button" onclick="location.reload()">Tentar de novo</button>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <p>MM&amp;B Cutelaria — Passo Fundo, RS</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

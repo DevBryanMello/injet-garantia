@@ -1,0 +1,271 @@
+/* MM&B Cutelaria — página de certificado
+   Paleta tirada das cores de revenimento do aço:
+   palha, bronze e azul-têmpera sobre aço escovado. */
+
+:root{
+  --aco:        #DDE0E0;  /* fundo, aço escovado claro */
+  --aco-fundo:  #EDEFEE;  /* superfície da folha */
+  --carvao:     #15191B;  /* texto */
+  --fumaca:     #5C6669;  /* texto secundário */
+  --oxido:      #B4BBBB;  /* linhas */
+  --tempera:    #27536F;  /* azul de revenimento */
+  --palha:      #B4832A;  /* amarelo-palha do aço aquecido */
+  --brasa:      #9A3B1E;  /* alerta */
+
+  --serifa: "Zilla Slab", Georgia, serif;
+  --texto: "Karla", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+*{ box-sizing: border-box; }
+
+html{ -webkit-text-size-adjust: 100%; }
+
+body{
+  margin: 0;
+  background: var(--aco);
+  background-image:
+    repeating-linear-gradient(
+      93deg,
+      rgba(255,255,255,.45) 0 1px,
+      rgba(0,0,0,0) 1px 4px
+    );
+  color: var(--carvao);
+  font-family: var(--texto);
+  font-size: 17px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ---------- topo ---------- */
+
+.topo{
+  padding: 22px 24px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.marca{
+  font-family: var(--serifa);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: .04em;
+}
+
+.marca-sub{
+  font-size: 13px;
+  color: var(--fumaca);
+  letter-spacing: .02em;
+}
+
+/* ---------- folha ---------- */
+
+.folha{
+  width: min(560px, calc(100% - 32px));
+  margin: 26px auto 40px;
+  background: var(--aco-fundo);
+  border: 1px solid var(--oxido);
+  border-top: 3px solid var(--tempera);
+  padding: 34px 28px 32px;
+  flex: 1 0 auto;
+}
+
+.estado[hidden]{ display: none; }
+
+/* ---------- selo de tang ---------- */
+
+.selo{
+  border: 2px solid var(--carvao);
+  padding: 14px 18px 12px;
+  display: inline-block;
+  text-align: center;
+  min-width: 190px;
+  background: transparent;
+}
+
+.selo--alerta{ border-color: var(--brasa); color: var(--brasa); }
+.selo--vazio{ border-style: dashed; border-color: var(--oxido); color: var(--fumaca); }
+
+.selo-topo{
+  display: block;
+  font-size: 11px;
+  letter-spacing: .28em;
+  color: inherit;
+  opacity: .75;
+  margin-bottom: 2px;
+}
+
+.selo-id{
+  display: block;
+  font-family: var(--serifa);
+  font-weight: 700;
+  font-size: clamp(30px, 9vw, 42px);
+  line-height: 1;
+  letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.selo-pulso{
+  display: block;
+  width: 120px;
+  height: 34px;
+  background: linear-gradient(90deg, var(--oxido) 25%, #d6dada 50%, var(--oxido) 75%);
+  background-size: 300% 100%;
+  animation: brilho 1.4s linear infinite;
+}
+
+@keyframes brilho{
+  from{ background-position: 100% 0; }
+  to{ background-position: -100% 0; }
+}
+
+/* ---------- status ---------- */
+
+.linha-status{
+  margin: 16px 0 26px;
+  font-size: 16px;
+  color: var(--fumaca);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ponto{
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--tempera);
+  flex: none;
+}
+
+.ponto--alerta{ background: var(--brasa); }
+.ponto--atencao{ background: var(--palha); }
+
+/* ---------- ficha de dados ---------- */
+
+.ficha{
+  margin: 0 0 26px;
+  border-top: 1px solid var(--oxido);
+}
+
+.ficha div{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--oxido);
+}
+
+.ficha dt{
+  font-size: 14px;
+  color: var(--fumaca);
+  flex: none;
+}
+
+.ficha dd{
+  margin: 0;
+  text-align: right;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- textos ---------- */
+
+.nota{
+  font-size: 15px;
+  color: var(--fumaca);
+  line-height: 1.65;
+  margin: 0 0 24px;
+  max-width: 62ch;
+}
+
+.garantia{
+  border-left: 3px solid var(--palha);
+  padding: 2px 0 2px 16px;
+  margin-bottom: 28px;
+}
+
+.garantia h2{
+  font-family: var(--serifa);
+  font-weight: 500;
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+
+.garantia ul{
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 15px;
+}
+
+.garantia li{ margin-bottom: 4px; }
+
+.garantia-fora{
+  font-size: 14px;
+  color: var(--fumaca);
+  margin: 0;
+}
+
+/* ---------- ações ---------- */
+
+.botao{
+  display: inline-block;
+  background: var(--tempera);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--texto);
+  font-size: 16px;
+  font-weight: 600;
+  border: 0;
+  padding: 13px 22px;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.botao:hover{ background: #1d4159; }
+.botao:focus-visible{ outline: 3px solid var(--palha); outline-offset: 2px; }
+
+/* ---------- busca manual ---------- */
+
+.busca{ display: grid; gap: 8px; max-width: 280px; }
+
+.busca label{ font-size: 14px; color: var(--fumaca); }
+
+.busca input{
+  font-family: var(--serifa);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  border: 1px solid var(--oxido);
+  background: #fff;
+  color: var(--carvao);
+}
+
+.busca input:focus-visible{ outline: 3px solid var(--tempera); outline-offset: 1px; }
+
+/* ---------- rodapé ---------- */
+
+.rodape{
+  text-align: center;
+  font-size: 13px;
+  color: var(--fumaca);
+  padding: 0 24px 26px;
+}
+
+.rodape p{ margin: 0; }
+
+@media (max-width: 420px){
+  body{ font-size: 16px; }
+  .folha{ padding: 26px 20px 28px; }
+  .ficha div{ flex-direction: column; gap: 2px; }
+  .ficha dd{ text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .selo-pulso{ animation: none; }
+  *{ transition: none !important; }
+}
