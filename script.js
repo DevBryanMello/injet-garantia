@@ -1,10 +1,10 @@
-/* MM&B Cutelaria — consulta de certificado
+/* INJETGOLD — consulta de certificado
    Lê o parâmetro ?id= da URL, busca na API do Google Apps Script e mostra o resultado. */
 
 /* ====== AJUSTE AQUI ====== */
 const CONFIG = {
   // Cole o link /exec que o Apps Script gerou ao publicar como Aplicativo da Web
-  API: 'https://script.google.com/macros/s/COLE_SEU_ID_AQUI/exec',
+  API: 'https://script.google.com/macros/s/AKfycbweOGckNfs086hfYOX6TIU4c6837-yBgj8l4d6w9TtAYcjmmt_u0uLQk2dRKJ8bsSeg/exec',
 
   // WhatsApp da oficina, só números, com DDI e DDD
   WHATSAPP: '5551999211038',
