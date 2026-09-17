@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel de Produtos</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{background:#0f1115;color:#fff}main{max-width:1100px;margin:auto;padding:20px}
+table{width:100%;border-collapse:collapse;background:#171a21}th,td{padding:10px;border-bottom:1px solid #333}
+button{padding:8px 12px;border:0;border-radius:8px;cursor:pointer}.edit{background:#c89b3c;color:#111}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center}
+.box{background:#fff;color:#111;padding:20px;border-radius:12px;width:min(500px,92vw)}
+input,select{width:100%;padding:10px;margin:6px 0}
+</style></head><body>
+<main><h1>Painel de Produtos</h1><p>Edita direto pela planilha.</p>
+<table><thead><tr><th>ID</th><th>Modelo</th><th>Aço</th><th>Cliente</th><th>Status</th><th></th></tr></thead>
+<tbody id="lista"><tr><td colspan="6">Carregando...</td></tr></tbody></table></main>
+<div class="modal" id="modal"><div class="box"><h2>Editar</h2>
+<input id="m-id" readonly><input id="m-produto"><input id="m-aco"><input id="m-cabo"><input id="m-cliente">
+<select id="m-status"><option>Ativa</option><option>Em reparo</option><option>Cancelada</option></select>
+<div style="display:flex;gap:10px;margin-top:10px"><button onclick="salvar()">Salvar</button><button onclick="modal.style.display='none'">Cancelar</button></div></div></div>
+<script>
+const API="https://script.google.com/macros/s/AKfycbweOGckNfs086hfYOX6TIU4c6837-yBgj8l4d6w9TtAYcjmmt_u0uLQk2dRKJ8bsSeg/exec";
+async function carregar(){
+ const r=await fetch(API+"?acao=listar"); const d=await r.json();
+ const tb=document.getElementById('lista'); tb.innerHTML='';
+ d.forEach(i=>tb.innerHTML+=`<tr><td>${i.certificado||''}</td><td>${i.produto||''}</td><td>${i.aco||''}</td><td>${i.cliente||''}</td><td>${i.status||''}</td><td><button class="edit" onclick='editar(${JSON.stringify(i)})'>Editar</button></td></tr>`);
+}
+function editar(i){modal.style.display='flex';["id","produto","aco","cabo","cliente","status"].forEach(k=>document.getElementById("m-"+k).value=i[k=="id"?"certificado":k]||"");}
+async function salvar(){
+ await fetch(API,{method:"POST",body:JSON.stringify({acao:"editar",certificado:m-id.value,produto:m-produto.value,aco:m-aco.value,cabo:m-cabo.value,cliente:m-cliente.value,status:m-status.value})});
+ modal.style.display='none'; carregar();
+}
+carregar();
+</script></body></html>
