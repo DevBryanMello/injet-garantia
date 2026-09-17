@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de QR Codes — MM&amp;B</title>
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;600&family=Zilla+Slab:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{ --aco:#DDE0E0; --folha:#EDEFEE; --carvao:#15191B; --fumaca:#5C6669;
+         --oxido:#B4BBBB; --tempera:#27536F; --palha:#B4832A; }
+  *{ box-sizing:border-box }
+  body{ margin:0; background:var(--aco); color:var(--carvao);
+        font-family:Karla,system-ui,sans-serif; font-size:16px; line-height:1.55 }
+  header{ padding:24px 24px 0 }
+  h1{ font-family:"Zilla Slab",Georgia,serif; font-size:26px; margin:0 0 4px }
+  header p{ margin:0; color:var(--fumaca); font-size:15px; max-width:60ch }
+  .painel{ width:min(900px,calc(100% - 32px)); margin:22px auto; background:var(--folha);
+           border:1px solid var(--oxido); border-top:3px solid var(--tempera); padding:22px }
+  .campos{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px }
+  label{ display:block; font-size:13px; color:var(--fumaca); margin-bottom:4px }
+  input{ width:100%; padding:9px 10px; border:1px solid var(--oxido); background:#fff;
+         font-family:inherit; font-size:15px; color:var(--carvao) }
+  input:focus-visible{ outline:3px solid var(--tempera); outline-offset:1px }
+  .acoes{ margin-top:18px; display:flex; gap:10px; flex-wrap:wrap }
+  button{ background:var(--tempera); color:#fff; border:0; padding:12px 20px;
+          font-family:inherit; font-size:15px; font-weight:600; cursor:pointer }
+  button.secundario{ background:transparent; color:var(--tempera); border:1px solid var(--tempera) }
+  button:focus-visible{ outline:3px solid var(--palha); outline-offset:2px }
+  .grade{ width:min(900px,calc(100% - 32px)); margin:0 auto 40px;
+          display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:16px }
+  .item{ background:#fff; border:1px solid var(--oxido); padding:10px; text-align:center }
+  .item canvas{ width:100%; height:auto; display:block }
+  .item a{ display:inline-block; margin-top:6px; font-size:13px; color:var(--tempera) }
+  #oculto{ position:absolute; left:-9999px; top:-9999px }
+  .aviso{ width:min(900px,calc(100% - 32px)); margin:0 auto 24px; font-size:14px; color:var(--fumaca) }
+  @media print{
+    header,.painel,.aviso{ display:none }
+    body{ background:#fff }
+    .grade{ width:100%; margin:0; gap:8px; grid-template-columns:repeat(4,1fr) }
+    .item{ border:1px dashed #999; break-inside:avoid }
+    .item a{ display:none }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Gerador de QR Codes</h1>
+  <p>Gera um QR por certificado apontando para a página de verificação. Salve as imagens ou imprima a folha inteira para colar nas etiquetas e nas caixas.</p>
+</header>
+
+<div class="painel">
+  <div class="campos">
+    <div>
+      <label for="base">Endereço do site</label>
+      <input id="base" value="https://seunome.github.io/mmb-garantia/">
+    </div>
+    <div>
+      <label for="prefixo">Prefixo</label>
+      <input id="prefixo" value="MB-">
+    </div>
+    <div>
+      <label for="inicio">Começar em</label>
+      <input id="inicio" type="number" value="1" min="1">
+    </div>
+    <div>
+      <label for="quantos">Quantidade</label>
+      <input id="quantos" type="number" value="12" min="1" max="200">
+    </div>
+    <div>
+      <label for="digitos">Dígitos</label>
+      <input id="digitos" type="number" value="4" min="1" max="8">
+    </div>
+    <div>
+      <label for="tamanho">Tamanho (px)</label>
+      <input id="tamanho" type="number" value="600" min="200" max="1200" step="50">
+    </div>
+  </div>
+
+  <div class="acoes">
+    <button id="gerar" type="button">Gerar QR Codes</button>
+    <button id="baixar" class="secundario" type="button">Baixar todos em PNG</button>
+    <button id="imprimir" class="secundario" type="button">Imprimir folha</button>
+  </div>
+</div>
+
+<p class="aviso" id="aviso"></p>
+<div class="grade" id="grade"></div>
+<div id="oculto"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const grade = $('grade');
+const oculto = $('oculto');
+
+function zeros(n, d){ return String(n).padStart(d, '0'); }
+
+function desenhar(qrCanvas, rotulo, tamanho){
+  const margem = Math.round(tamanho * 0.08);
+  const alturaTexto = Math.round(tamanho * 0.14);
+  const saida = document.createElement('canvas');
+  saida.width = tamanho + margem * 2;
+  saida.height = tamanho + margem * 2 + alturaTexto;
+
+  const ctx = saida.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, saida.width, saida.height);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(qrCanvas, margem, margem, tamanho, tamanho);
+
+  ctx.fillStyle = '#15191B';
+  ctx.font = '700 ' + Math.round(alturaTexto * 0.62) + 'px "Zilla Slab", Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(rotulo, saida.width / 2, tamanho + margem + alturaTexto * 0.55);
+
+  return saida;
+}
+
+function gerar(){
+  const base = $('base').value.trim();
+  const prefixo = $('prefixo').value.trim();
+  const inicio = parseInt($('inicio').value, 10) || 1;
+  const quantos = Math.min(parseInt($('quantos').value, 10) || 1, 200);
+  const digitos = parseInt($('digitos').value, 10) || 4;
+  const tamanho = parseInt($('tamanho').value, 10) || 600;
+
+  grade.innerHTML = '';
+  oculto.innerHTML = '';
+
+  const sep = base.indexOf('?') === -1 ? '?' : '&';
+
+  for (let i = 0; i < quantos; i++){
+    const codigo = prefixo + zeros(inicio + i, digitos);
+    const url = base + sep + 'id=' + encodeURIComponent(codigo);
+
+    const caixa = document.createElement('div');
+    oculto.appendChild(caixa);
+    new QRCode(caixa, {
+      text: url,
+      width: tamanho,
+      height: tamanho,
+      correctLevel: QRCode.CorrectLevel.H   // tolera desgaste e etiqueta amassada
+    });
+
+    const origem = caixa.querySelector('canvas');
+    const pronto = desenhar(origem, codigo, tamanho);
+
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.appendChild(pronto);
+
+    const link = document.createElement('a');
+    link.textContent = 'Baixar';
+    link.download = codigo + '.png';
+    link.href = pronto.toDataURL('image/png');
+    item.appendChild(link);
+
+    grade.appendChild(item);
+  }
+
+  $('aviso').textContent = quantos + ' QR Codes gerados. Teste um com a câmera do celular antes de imprimir o lote.';
+}
+
+function baixarTodos(){
+  const links = grade.querySelectorAll('a');
+  if (!links.length){ $('aviso').textContent = 'Gere os QR Codes primeiro.'; return; }
+  let i = 0;
+  const passo = setInterval(() => {
+    if (i >= links.length){ clearInterval(passo); return; }
+    links[i].click();
+    i++;
+  }, 350);
+}
+
+$('gerar').addEventListener('click', gerar);
+$('baixar').addEventListener('click', baixarTodos);
+$('imprimir').addEventListener('click', () => window.print());
+gerar();
+</script>
+</body>
+</html>
