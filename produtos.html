@@ -25,9 +25,35 @@ async function carregar(){
  d.forEach(i=>tb.innerHTML+=`<tr><td>${i.certificado||''}</td><td>${i.produto||''}</td><td>${i.aco||''}</td><td>${i.cliente||''}</td><td>${i.status||''}</td><td><button class="edit" onclick='editar(${JSON.stringify(i)})'>Editar</button></td></tr>`);
 }
 function editar(i){modal.style.display='flex';["id","produto","aco","cabo","cliente","status"].forEach(k=>document.getElementById("m-"+k).value=i[k=="id"?"certificado":k]||"");}
-async function salvar(){
- await fetch(API,{method:"POST",body:JSON.stringify({acao:"editar",certificado:m-id.value,produto:m-produto.value,aco:m-aco.value,cabo:m-cabo.value,cliente:m-cliente.value,status:m-status.value})});
- modal.style.display='none'; carregar();
+async function salvar() {
+
+  const senha = prompt("Digite a senha de administrador:");
+
+  if (!senha) return;
+
+  const r = await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({
+      acao: "editar",
+      senha: senha,
+      certificado: document.getElementById("m-id").value,
+      produto: document.getElementById("m-produto").value,
+      aco: document.getElementById("m-aco").value,
+      cabo: document.getElementById("m-cabo").value,
+      cliente: document.getElementById("m-cliente").value,
+      status: document.getElementById("m-status").value
+    })
+  });
+
+  const resposta = await r.json();
+
+  if (!resposta.ok) {
+    alert("Erro: " + (resposta.erro || "Não foi possível salvar."));
+    return;
+  }
+
+  document.getElementById("modal").style.display = "none";
+  carregar();
 }
 carregar();
 </script></body></html>
