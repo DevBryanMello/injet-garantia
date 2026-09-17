@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadastrar certificado — Injet Gold</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,600;1,400&family=Zilla+Slab:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .campo{ display:grid; gap:6px; margin-bottom:16px; }
+  .campo label{ font-size:14px; color:var(--fumaca); }
+  .campo input, .campo select, .campo textarea{
+    font-family: var(--texto); font-size:16px; padding:11px 12px;
+    border:1px solid var(--oxido); background:#fff; color:var(--carvao);
+  }
+  .campo textarea{ resize:vertical; min-height:64px; }
+  .campo input:focus-visible, .campo select:focus-visible, .campo textarea:focus-visible{
+    outline:3px solid var(--tempera); outline-offset:1px;
+  }
+  .linha-dupla{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:480px){ .linha-dupla{ grid-template-columns:1fr; } }
+  .aviso-erro{
+    background:#fbeae4; border-left:3px solid var(--brasa); color:#6b2612;
+    padding:10px 14px; font-size:14px; margin-bottom:18px;
+  }
+  .cartao-sucesso{ text-align:center; padding:6px 0 4px; }
+  .cartao-sucesso #qr{ display:inline-block; margin:14px 0 6px; }
+  .acoes-sucesso{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+  .botao.secundario{ background:transparent; color:var(--tempera); border:1px solid var(--tempera); }
+  #trava{ display:grid; gap:10px; max-width:280px; }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <span class="marca">Injet Gold</span>
+  <span class="marca-sub">cadastro de certificados</span>
+</header>
+
+<main class="folha">
+
+  <!-- Trava de senha -->
+  <section id="trava" data-tela>
+    <p class="linha-status" style="margin-top:0">Digite a senha para cadastrar</p>
+    <input id="senha" type="password" placeholder="Senha" autocomplete="current-password">
+    <button class="botao" id="btn-entrar" type="button">Entrar</button>
+    <p class="nota" id="erro-senha" style="display:none;color:var(--brasa)"></p>
+  </section>
+
+  <!-- Formulário -->
+  <section id="form" data-tela hidden>
+    <p class="linha-status" style="margin-top:0">Nova peça</p>
+
+    <div id="aviso" class="aviso-erro" hidden></div>
+
+    <div class="campo">
+      <label for="f-produto">Modelo *</label>
+      <input id="f-produto" placeholder='Ex.: Faca Skinner 5"'>
+    </div>
+
+    <div class="linha-dupla">
+      <div class="campo">
+        <label for="f-aco">Aço da lâmina</label>
+        <input id="f-aco" placeholder="Ex.: SAE 1070 forjado">
+      </div>
+      <div class="campo">
+        <label for="f-cabo">Cabo</label>
+        <input id="f-cabo" placeholder="Ex.: Nogueira estabilizada">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="f-cliente">Cliente</label>
+      <input id="f-cliente" placeholder="Nome completo">
+    </div>
+
+    <div class="linha-dupla">
+      <div class="campo">
+        <label for="f-telefone">Telefone do cliente</label>
+        <input id="f-telefone" inputmode="tel" placeholder="54999990000">
+      </div>
+      <div class="campo">
+        <label for="f-data">Data</label>
+        <input id="f-data" type="date">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label for="f-status">Situação</label>
+      <select id="f-status">
+        <option value="Ativa" selected>Ativa</option>
+        <option value="Em reparo">Em reparo</option>
+        <option value="Cancelada">Cancelada</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="f-obs">Observações (não aparece para o cliente)</label>
+      <textarea id="f-obs" placeholder="Anotações internas"></textarea>
+    </div>
+
+    <button class="botao" id="btn-salvar" type="button">Gerar certificado</button>
+  </section>
+
+  <!-- Sucesso -->
+  <section id="sucesso" data-tela hidden>
+    <div class="cartao-sucesso">
+      <p class="linha-status" style="justify-content:center;margin-top:0">Certificado criado</p>
+      <strong class="selo-id" id="s-codigo">MB-0000</strong>
+      <div id="qr"></div>
+      <p class="nota" id="s-resumo" style="margin:0 auto"></p>
+      <div class="acoes-sucesso">
+        <a class="botao" id="s-ver" href="#" target="_blank" rel="noopener">Ver certificado</a>
+        <button class="botao secundario" id="s-outro" type="button">Cadastrar outra peça</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape"><p>MM&amp;B Cutelaria — cadastro interno</p></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ====== AJUSTE AQUI (igual ao script.js) ====== */
+const CONFIG = {
+  API: 'https://script.google.com/macros/s/AKfycbweOGckNfs086hfYOX6TIU4c6837-yBgj8l4d6w9TtAYcjmmt_u0uLQk2dRKJ8bsSeg/exec',
+  SITE: 'https://devbryanmello.github.io/injet-garantia/'
+};
+/* =============================================== */
+
+const $ = id => document.getElementById(id);
+let senhaAtual = '';
+
+function mostrarTela(id) {
+  document.querySelectorAll('[data-tela]').forEach(s => s.hidden = s.id !== id);
+}
+
+function dataHojeISO() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+$('f-data').value = dataHojeISO();
+
+function isoParaBR(iso) {
+  if (!iso) return '';
+  const [a, m, d] = iso.split('-');
+  return d + '/' + m + '/' + a;
+}
+
+$('btn-entrar').addEventListener('click', () => {
+  const v = $('senha').value;
+  if (!v) { $('senha').focus(); return; }
+  senhaAtual = v;
+  mostrarTela('form');
+  $('f-produto').focus();
+});
+$('senha').addEventListener('keydown', e => { if (e.key === 'Enter') $('btn-entrar').click(); });
+
+function limparFormulario() {
+  ['f-produto','f-aco','f-cabo','f-cliente','f-telefone','f-obs'].forEach(id => $(id).value = '');
+  $('f-data').value = dataHojeISO();
+  $('f-status').value = 'Ativa';
+  $('aviso').hidden = true;
+}
+
+function mostrarErro(msg) {
+  const el = $('aviso');
+  el.textContent = msg;
+  el.hidden = false;
+}
+
+const MENSAGENS_ERRO = {
+  SENHA_NAO_CONFIGURADA: 'A senha ainda não foi configurada no Apps Script (rode definirSenha()).',
+  SENHA_INCORRETA: 'Senha incorreta.',
+  PRODUTO_AUSENTE: 'Preencha o modelo da peça.',
+  JSON_INVALIDO: 'Falha ao enviar os dados. Tente de novo.'
+};
+
+$('btn-salvar').addEventListener('click', () => {
+  const produto = $('f-produto').value.trim();
+  if (!produto) { mostrarErro('Preencha o modelo da peça.'); $('f-produto').focus(); return; }
+
+  const corpo = {
+    senha: senhaAtual,
+    produto: produto,
+    aco: $('f-aco').value.trim(),
+    cabo: $('f-cabo').value.trim(),
+    cliente: $('f-cliente').value.trim(),
+    telefone: $('f-telefone').value.trim(),
+    data: isoParaBR($('f-data').value),
+    status: $('f-status').value,
+    observacoes: $('f-obs').value.trim()
+  };
+
+  const botao = $('btn-salvar');
+  botao.disabled = true;
+  botao.textContent = 'Salvando…';
+  $('aviso').hidden = true;
+
+  // Content-Type text/plain evita o preflight de CORS que o Apps Script não responde.
+  fetch(CONFIG.API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(corpo)
+  })
+    .then(r => r.json())
+    .then(resp => {
+      botao.disabled = false;
+      botao.textContent = 'Gerar certificado';
+
+      if (!resp.ok) {
+        if (resp.erro === 'SENHA_INCORRETA') { mostrarTela('trava'); $('erro-senha').textContent = 'Senha incorreta.'; $('erro-senha').style.display = 'block'; return; }
+        mostrarErro(MENSAGENS_ERRO[resp.erro] || 'Não deu para salvar. Tente de novo.');
+        return;
+      }
+
+      renderSucesso(resp.dados);
+    })
+    .catch(() => {
+      botao.disabled = false;
+      botao.textContent = 'Gerar certificado';
+      mostrarErro('Sem conexão com a API agora. Tente de novo.');
+    });
+});
+
+function renderSucesso(dados) {
+  const codigo = dados.certificado;
+  $('s-codigo').textContent = codigo;
+  $('s-resumo').textContent = [dados.produto, dados.cliente].filter(Boolean).join(' — ');
+
+  const url = CONFIG.SITE + '?id=' + encodeURIComponent(codigo);
+  $('s-ver').href = url;
+
+  $('qr').innerHTML = '';
+  new QRCode($('qr'), { text: url, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.H });
+
+  mostrarTela('sucesso');
+}
+
+$('s-outro').addEventListener('click', () => {
+  limparFormulario();
+  mostrarTela('form');
+  $('f-produto').focus();
+});
+</script>
+</body>
+</html>
