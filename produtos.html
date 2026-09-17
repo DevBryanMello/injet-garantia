@@ -3,12 +3,195 @@
 <title>Painel de Produtos</title>
 <link rel="stylesheet" href="style.css">
 <style>
-body{background:#0f1115;color:#fff}main{max-width:1100px;margin:auto;padding:20px}
-table{width:100%;border-collapse:collapse;background:#171a21}th,td{padding:10px;border-bottom:1px solid #333}
-button{padding:8px 12px;border:0;border-radius:8px;cursor:pointer}.edit{background:#c89b3c;color:#111}
-.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center}
-.box{background:#fff;color:#111;padding:20px;border-radius:12px;width:min(500px,92vw)}
-input,select{width:100%;padding:10px;margin:6px 0}
+body{
+ :root{
+  --aco:#DDE0E0;
+  --folha:#EDEFEE;
+  --carvao:#15191B;
+  --fumaca:#5C6669;
+  --oxido:#B4BBBB;
+  --tempera:#27536F;
+  --palha:#B4832A;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--aco);
+  color:var(--carvao);
+  font-family:Karla,system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+}
+
+main{
+  width:min(1100px,calc(100% - 32px));
+  margin:28px auto;
+  background:var(--folha);
+  border:1px solid var(--oxido);
+  border-top:4px solid var(--tempera);
+  padding:24px;
+}
+
+h1{
+  font-family:"Zilla Slab",Georgia,serif;
+  font-size:30px;
+  margin:0 0 6px;
+}
+
+p{
+  margin:0 0 22px;
+  color:var(--fumaca);
+}
+
+/* Tabela */
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border:1px solid var(--oxido);
+}
+
+thead{
+  background:var(--tempera);
+  color:#fff;
+}
+
+th{
+  padding:14px 12px;
+  text-align:left;
+  font-weight:600;
+  font-size:14px;
+}
+
+td{
+  padding:12px;
+  border-bottom:1px solid var(--oxido);
+}
+
+tbody tr:hover{
+  background:#F5F7F7;
+}
+
+/* Botões */
+
+button{
+  background:var(--tempera);
+  color:#fff;
+  border:0;
+  padding:10px 16px;
+  border-radius:0;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  filter:brightness(.95);
+}
+
+button:focus-visible{
+  outline:3px solid var(--palha);
+  outline-offset:2px;
+}
+
+button.edit{
+  background:var(--palha);
+  color:#fff;
+}
+
+/* Modal */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(21,25,27,.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  backdrop-filter:blur(3px);
+}
+
+.box{
+  width:min(520px,100%);
+  background:var(--folha);
+  border:1px solid var(--oxido);
+  border-top:4px solid var(--tempera);
+  padding:24px;
+}
+
+.box h2{
+  font-family:"Zilla Slab",Georgia,serif;
+  margin:0 0 18px;
+}
+
+/* Campos */
+
+.box input,
+.box select{
+  width:100%;
+  padding:10px;
+  margin:8px 0 14px;
+  border:1px solid var(--oxido);
+  background:#fff;
+  color:var(--carvao);
+  font-family:inherit;
+  font-size:15px;
+}
+
+.box input:focus-visible,
+.box select:focus-visible{
+  outline:3px solid var(--tempera);
+  outline-offset:1px;
+}
+
+/* Botões do modal */
+
+.box .acoes{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.box .cancelar{
+  background:transparent;
+  color:var(--tempera);
+  border:1px solid var(--tempera);
+}
+
+/* Responsivo */
+
+@media (max-width:768px){
+
+  main{
+    padding:16px;
+  }
+
+  table{
+    font-size:14px;
+  }
+
+  th,td{
+    padding:10px 8px;
+  }
+
+  button{
+    width:100%;
+  }
+
+  .box .acoes button{
+    flex:1;
+  }
+
+}
+}
 </style></head><body>
 <main><h1>Painel de Produtos</h1><p>Edita direto pela planilha.</p>
 <table><thead><tr><th>ID</th><th>Modelo</th><th>Aço</th><th>Cliente</th><th>Status</th><th></th></tr></thead>
